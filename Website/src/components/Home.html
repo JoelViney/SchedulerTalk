@@ -1,0 +1,50 @@
+<main role="main" class="container">
+    <div class="jumbotron">
+
+        <div class="Widgets">
+
+            <div class="row">
+                <div class="col-9">
+                    <h1>Widgets</h1>
+                </div>
+                <div class="col-3">
+                    <button @click.prevent="addClicked()" class="btn btn-outline-secondary float-right">Add</button>
+                </div>
+            </div>
+
+            <div class="row" v-if="error">
+                <div class="col">
+                    <div class="alert alert-danger mt-2" role="alert">
+                        {{ error }}
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Date Created</th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <router-link tag="tr" :to="{ name: 'widget', params: { id: item.id } }" v-for="item in list" :key="item.id"
+                        class="hand-cursor">
+                        <td>                            
+                            <div v-if="item.processing" class="spinner-grow" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </td>
+                        <th scope="row">{{ item.id }}</th>
+                        <td> {{ item.name }}</td>
+                        <td> {{ item.dateCreated }}</td>
+                    </router-link>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</main>

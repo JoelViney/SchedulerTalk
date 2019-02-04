@@ -1,0 +1,37 @@
+/*
+  Cursor Button Fix
+  Bootstrap 4 Fix: decided that buttons don't need hand cursors.
+*/
+.cursor-pointer {
+    cursor: default;
+}
+.btn-hand {
+    cursor: pointer;
+    cursor: hand;
+}
+.btn-hand:disabled:hover {
+    cursor: default;
+}
+.btn, btn-hand {
+    cursor: pointer;
+    cursor: hand;
+}
+.btn:disabled:hover, btn-hand:disabled:hover {
+    cursor: default;
+}
+
+/*
+hand cursor for table-hover
+*/
+.hand-cursor {
+    cursor: pointer;
+}
+.table-hover td {
+	cursor: pointer;
+}
+/*
+red test css
+*/
+.red {
+    color: red;
+}
