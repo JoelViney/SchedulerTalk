@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using NLog.Web;
+using SchedulerTalk.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SchedulerTalk
@@ -30,8 +32,9 @@ namespace SchedulerTalk
 
             //=================================================================
             // LOGGER
-            // https://github.com/NLog/NLog.Web/wiki/Getting-started-with-ASP.NET-Core-2
+            //  https://github.com/NLog/NLog.Web/wiki/Getting-started-with-ASP.NET-Core-2
             // NLog: Setup the logger first to catch all errors
+            //
             var logFactory = NLogBuilder.ConfigureNLog("nlog.config");
             logFactory.KeepVariablesOnReload = true;
             logFactory.Configuration.Reload();
@@ -44,6 +47,10 @@ namespace SchedulerTalk
         /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
+            //=================================================================
+            // In Memory Database
+            services.AddDbContext<DatabaseContext>(opt => opt.UseInMemoryDatabase("SchedulerTalk"));
+
             //=================================================================
             // CORS
             // "I allow cross domain calls from the domains I specify"
@@ -118,8 +125,32 @@ namespace SchedulerTalk
                 c.RoutePrefix = string.Empty;
             });
 
+            // Seed the database
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<DatabaseContext>();
+                AddTestData(context);
+            }
+
+
             // app.UseHttpsRedirection();
             app.UseMvc();
+        }
+
+        private static void AddTestData(DatabaseContext context)
+        {
+            var list = new List<Widget>()
+            {
+                new Widget() { Name = "Foggle", Processing = false, DateCreated = DateTime.Now.AddDays(-5) },
+                new Widget() { Name = "Woggle", Processing = false, DateCreated = DateTime.Now.AddDays(-4) },
+                new Widget() { Name = "Sniffl", Processing = false, DateCreated = DateTime.Now.AddDays(-3) },
+                new Widget() { Name = "Groblr", Processing = true, DateCreated = DateTime.Now.AddDays(-2) },
+                new Widget() { Name = "Chiggl", Processing = true, DateCreated = DateTime.Now.AddDays(-1) },
+            };
+
+            context.Widgets.AddRange(list);
+
+            context.SaveChanges();
         }
     }
 }
