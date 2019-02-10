@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using SchedulerTalk.Hubs;
 using SchedulerTalk.Models;
+using SchedulerTalk.Services;
 
 namespace SchedulerTalk.Controllers
 {
@@ -11,51 +17,44 @@ namespace SchedulerTalk.Controllers
     [ApiController]
     public class WidgetsController : ControllerBase
     {
-        private DatabaseContext _context;
+        private readonly WidgetService _service;
 
-        public WidgetsController(DatabaseContext context)
+        public WidgetsController(WidgetService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Widget>> Get()
+        public async Task<ActionResult<List<Widget>>> Get()
         {
-            var list = _context.Widgets.ToList();
-            return list;
+            return await _service.GetListAsync();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Widget> Get(int id)
+        public async Task<ActionResult<Widget>> Get(int id)
         {
-            var item = _context.Widgets.First(x => x.Id == id);
-            return item;
+            return await _service.GetAsync(id);
         }
 
         [HttpPost]
-        public void Post([FromBody] Widget value)
+        [AllowAnonymous]
+        public async Task<Widget> Post([FromBody] Widget item)
         {
-            _context.Widgets.Add(value);
-            _context.SaveChanges();
+            return await _service.CreateAsync(item);
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Widget value)
+        [AllowAnonymous]
+        public async Task<ActionResult<Widget>> Put(int id, [FromBody] Widget item)
         {
-            var widget = _context.Widgets.First(x => x.Id == id);
-
-            widget.Name = value.Name;
-            widget.Processing = value.Processing;
-
-            _context.SaveChanges();
+            return await _service.UpdateAsync(item);
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [AllowAnonymous]
+        public async Task Delete(int id)
         {
-            var widget = _context.Widgets.First(x => x.Id == id);
-            _context.Widgets.Remove(widget);
-            _context.SaveChanges();
+            await _service.DeleteAsync(id);
         }
     }
 }

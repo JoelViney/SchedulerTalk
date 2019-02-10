@@ -1,0 +1,2 @@
+﻿
+*** This is to assure that the log subdirectory is created on the serve ***

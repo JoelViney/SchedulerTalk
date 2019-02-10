@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using NLog.Web;
+using SchedulerTalk.Hubs;
+using SchedulerTalk.Jobs;
 using SchedulerTalk.Models;
+using SchedulerTalk.Services;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
+using System.IO;
 
 namespace SchedulerTalk
 {
@@ -49,22 +48,9 @@ namespace SchedulerTalk
         {
             //=================================================================
             // In Memory Database
+            //
             services.AddDbContext<DatabaseContext>(opt => opt.UseInMemoryDatabase("SchedulerTalk"));
 
-            //=================================================================
-            // CORS
-            // "I allow cross domain calls from the domains I specify"
-            // https://weblog.west-wind.com/posts/2016/Sep/26/ASPNET-Core-and-CORS-Gotchas
-            //
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
-            });
 
             //=================================================================
             // SWAGGER
@@ -85,6 +71,37 @@ namespace SchedulerTalk
 
 
             //=================================================================
+            // SIGNALR
+            //
+            services.AddSignalR();
+
+            //=================================================================
+            // DEPENDENCY INJECTION
+            //
+            services.AddScoped<WidgetService>();
+
+            //=================================================================
+            // CORS
+            // "I allow cross domain calls from the domains I specify"
+            // https://weblog.west-wind.com/posts/2016/Sep/26/ASPNET-Core-and-CORS-Gotchas
+            //
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithOrigins("http://localhost:8080", "http://localhost:49699")
+                    .AllowCredentials());
+            });
+
+            //=================================================================
+            // Hangfire
+            //
+            services.AddHangfire(config => config.UseMemoryStorage());
+
+            //=================================================================
             // CONFIGURATION OPTIONS
             //
             services.AddMvc(opt =>
@@ -102,6 +119,16 @@ namespace SchedulerTalk
         /// </summary>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            // Bug in core 2.2 >>> https://github.com/aspnet/AspNetCore/issues/4398
+            app.Use(async (ctx, next) =>
+            {
+                await next();
+                if (ctx.Response.StatusCode == 204)
+                {
+                    ctx.Response.ContentLength = 0;
+                }
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -114,6 +141,8 @@ namespace SchedulerTalk
 
             app.UseCors("CorsPolicy");
 
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -125,20 +154,37 @@ namespace SchedulerTalk
                 c.RoutePrefix = string.Empty;
             });
 
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
+
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<WidgetHub>("/widgethub");
+            });
+
+            // app.UseHttpsRedirection();
+            app.UseMvc();
+
+            StartJobs();
+
+
             // Seed the database
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<DatabaseContext>();
                 AddTestData(context);
             }
+        }
 
-
-            // app.UseHttpsRedirection();
-            app.UseMvc();
+        private static void StartJobs()
+        {
+            RecurringJob.AddOrUpdate<CreateWidgetJob>("Create Widgets Job", x => x.Execute(), Cron.Minutely());
         }
 
         private static void AddTestData(DatabaseContext context)
         {
+            /*
             var list = new List<Widget>()
             {
                 new Widget() { Name = "Foggle", Processing = false, DateCreated = DateTime.Now.AddDays(-5) },
@@ -151,6 +197,7 @@ namespace SchedulerTalk
             context.Widgets.AddRange(list);
 
             context.SaveChanges();
+            */
         }
     }
 }

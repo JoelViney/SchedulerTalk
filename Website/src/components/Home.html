@@ -31,8 +31,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <router-link tag="tr" :to="{ name: 'widget', params: { id: item.id } }" v-for="item in list" :key="item.id"
-                        class="hand-cursor">
+                    <tr v-for="item in list">
                         <td>                            
                             <div v-if="item.processing" class="spinner-grow" role="status">
                                 <span class="sr-only">Loading...</span>
@@ -41,7 +40,7 @@
                         <th scope="row">{{ item.id }}</th>
                         <td> {{ item.name }}</td>
                         <td> {{ item.dateCreated }}</td>
-                    </router-link>
+                    </tr>
                 </tbody>
             </table>
 

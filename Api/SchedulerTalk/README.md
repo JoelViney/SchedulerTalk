@@ -19,6 +19,8 @@ Install-Package NLog.Web.AspNetCore
 
 Install-Package HangFire 
 Install-Package Hangfire.MemoryStorage.Core
+or
+Install-Package HangFire.SqlServer -Version 1.6.22
 
 	Startup.
 
