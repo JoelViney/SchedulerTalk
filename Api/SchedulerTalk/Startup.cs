@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Hangfire.Console;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -99,7 +100,12 @@ namespace SchedulerTalk
             //=================================================================
             // Hangfire
             //
-            services.AddHangfire(config => config.UseMemoryStorage());
+            services.AddHangfire(config =>
+                {
+                    config.UseMemoryStorage();
+                    config.UseConsole();
+                }
+            );
 
             //=================================================================
             // CONFIGURATION OPTIONS
@@ -178,7 +184,7 @@ namespace SchedulerTalk
 
         private static void StartJobs()
         {
-            RecurringJob.AddOrUpdate<CreateWidgetJob>("Create Widgets Job", x => x.Execute(), Cron.Minutely());
+            RecurringJob.AddOrUpdate<CreateWidgetJob>("Create Widgets Job", x => x.Execute(null), Cron.Minutely());
         }
 
         private static void AddTestData(DatabaseContext context)

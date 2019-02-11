@@ -1,4 +1,6 @@
 ﻿using Hangfire;
+using Hangfire.Console;
+using Hangfire.Server;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -8,6 +10,7 @@ using SchedulerTalk.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SchedulerTalk.Jobs
@@ -25,14 +28,16 @@ namespace SchedulerTalk.Jobs
             _service = service;
         }
 
-        public async Task Execute()
+        public async Task Execute(PerformContext context)
         {
-            _logger.LogDebug("Starting job.");
+            context.WriteLine("Starting job...");
+            _logger.LogDebug("Starting job...");
 
             var prefixes = new string[] { "Fugg", "Dog", "Cheek", "Moo", "Bob", "Choo", "Zee", "Wagh", "Chomp" };
             var suffixes = new string[] { "ed", "er", "ington", "ssssss", "oes", "choo", "lah", "gh", "-alot" };
 
             var name = $"{prefixes[_random.Next(prefixes.Length)]}{suffixes[_random.Next(suffixes.Length)]}";
+
 
             var item = new Widget()
             {
@@ -41,11 +46,16 @@ namespace SchedulerTalk.Jobs
                 DateCreated = DateTime.Now
             };
 
+            context.WriteLine("Creating widget {0}", item.Name);
             _logger.LogDebug("Creating widget {0}...", item.Name);
 
             var widget = await _service.CreateAsync(item);
 
-            _logger.LogDebug("Starting done.");
+            context.WriteLine("Job done.");
+            context.WriteLine("Job done.");
+            context.WriteLine("Job done.");
+            _logger.LogDebug("Job done.");
+            Thread.Sleep(1000);
         }
     }
 }

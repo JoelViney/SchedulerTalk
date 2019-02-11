@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Hangfire.Console;
+using Hangfire.Server;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SchedulerTalk.Hubs;
@@ -7,6 +9,7 @@ using SchedulerTalk.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SchedulerTalk.Jobs
@@ -22,19 +25,25 @@ namespace SchedulerTalk.Jobs
             _service = service;
         }
 
-        public async Task Execute(int id)
+        public async Task Execute(PerformContext context, int id)
         {
+            context.WriteLine("Starting job.");
             _logger.LogDebug("Starting job.");
 
             var widget = await _service.GetAsync(id);
 
+            context.WriteLine("Processing widget {0}...", widget.Name);
             _logger.LogDebug("Processing widget {0}...", widget.Name);
 
             widget.Processing = false;
 
             await _service.UpdateAsync(widget);
 
+            context.WriteLine("Job done.");
+            context.WriteLine("Job done.");
+            context.WriteLine("Job done.");
             _logger.LogDebug("Job done.");
+            Thread.Sleep(1000);
         }
     }
 }

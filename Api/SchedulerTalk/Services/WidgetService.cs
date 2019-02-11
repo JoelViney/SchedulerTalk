@@ -54,7 +54,7 @@ namespace SchedulerTalk.Services
 
             await _hubContext.Clients.All.SendAsync("Create", item);
 
-            var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(item.Id), TimeSpan.FromSeconds(30));
+            var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(null, item.Id), TimeSpan.FromSeconds(30));
 
             return item;
         }
@@ -73,7 +73,7 @@ namespace SchedulerTalk.Services
 
             if (item.Processing)
             {
-                var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(item.Id), TimeSpan.FromSeconds(10));
+                var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(null, item.Id), TimeSpan.FromSeconds(10));
             }
 
             return widget;
