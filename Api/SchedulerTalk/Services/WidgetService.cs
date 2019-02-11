@@ -71,7 +71,7 @@ namespace SchedulerTalk.Services
 
             await _hubContext.Clients.All.SendAsync("Update", item);
 
-            var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(item.Id), TimeSpan.FromSeconds(30));
+            var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(item.Id), TimeSpan.FromSeconds(10));
 
             return widget;
         }

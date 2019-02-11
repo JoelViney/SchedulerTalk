@@ -31,21 +31,22 @@ export default {
 
     this.connection.on("Create", function (item) {
       console.log('Create recieved: ', item);
-      thisVue.list.push(item);
+      thisVue.list.unshift(item);
     });
 
     this.connection.on("Update", function (item) {
-      console.log('Update recieved: ', item);
+      console.log('Update received: ', item);
 
-      var index = thisVue.list.indexOf(x => x.id == item.id);
-      if (index) {
+      var index = thisVue.list.findIndex(x => x.id === item.id);
+      console.log('index: ', index);
+      if (index !== -1) {
         var local = thisVue.list[index];
-        thisVue.list.pop(local);
-        thisVue.list.push(item);
-        // Vue.set(thisVue.list, index, item);
+
+        local.processing = item.processing;
+        // TODO: Why is this not working --> Vue.set(thisVue.list, index, item);
       } else {
         console.log('Updating non-existing item....');
-        thisVue.list.push(item);
+        thisVue.list.unshift(item);
       }
     });
 
