@@ -168,7 +168,6 @@ namespace SchedulerTalk
 
             StartJobs();
 
-
             // Seed the database
             using (var scope = app.ApplicationServices.CreateScope())
             {

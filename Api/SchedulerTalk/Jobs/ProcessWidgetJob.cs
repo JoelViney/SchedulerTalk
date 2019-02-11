@@ -24,6 +24,8 @@ namespace SchedulerTalk.Jobs
 
         public async Task Execute(int id)
         {
+            _logger.LogDebug("Starting job.");
+
             var widget = await _service.GetAsync(id);
 
             _logger.LogDebug("Processing widget {0}...", widget.Name);
@@ -31,6 +33,8 @@ namespace SchedulerTalk.Jobs
             widget.Processing = false;
 
             await _service.UpdateAsync(widget);
+
+            _logger.LogDebug("Job done.");
         }
     }
 }

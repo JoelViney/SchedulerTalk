@@ -27,6 +27,8 @@ namespace SchedulerTalk.Jobs
 
         public async Task Execute()
         {
+            _logger.LogDebug("Starting job.");
+
             var prefixes = new string[] { "Fugg", "Dog", "Cheek", "Moo", "Bob", "Choo", "Zee", "Wagh", "Chomp" };
             var suffixes = new string[] { "ed", "er", "ington", "ssssss", "oes", "choo", "lah", "gh", "-alot" };
 
@@ -42,6 +44,8 @@ namespace SchedulerTalk.Jobs
             _logger.LogDebug("Creating widget {0}...", item.Name);
 
             var widget = await _service.CreateAsync(item);
+
+            _logger.LogDebug("Starting done.");
         }
     }
 }
