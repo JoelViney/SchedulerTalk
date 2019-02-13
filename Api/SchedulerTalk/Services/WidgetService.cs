@@ -29,7 +29,7 @@ namespace SchedulerTalk.Services
 
         public async Task<ActionResult<List<Widget>>> GetListAsync()
         {
-            var list = await _context.Widgets.OrderByDescending(o => o.DateCreated).ToListAsync();
+            var list = await _context.Widgets.Take(5).OrderByDescending(o => o.DateCreated).ToListAsync();
             return list;
 
         }

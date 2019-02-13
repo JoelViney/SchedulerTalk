@@ -1,7 +1,8 @@
 
 import Vue from 'vue'
 
-const apiUrl = 'http://localhost:49699/api'
+const apiUrl = 'https://schedulertalkapi.azurewebsites.net/api'
+// const apiUrl = 'http://localhost:49699/api'
 
 const serviceUrl = `${apiUrl}/Widgets/`
 

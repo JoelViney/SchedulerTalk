@@ -22,8 +22,9 @@ export default {
     this.fetchData();
 
     // Creates and starts a connection.
+    // http://localhost:49699/widgethub
     this.connection = new signalR.HubConnectionBuilder()
-        .withUrl("http://localhost:49699/widgethub")
+        .withUrl("https://schedulertalkapi.azurewebsites.net/widgethub")
         .configureLogging(signalR.LogLevel.Information)
         .build();
 
@@ -63,7 +64,6 @@ export default {
   methods: {
     fetchData() {
       console.log('fetchData');
-      return; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       WidgetService.getList(this.list).then(
         response => {
           this.list = response.data;

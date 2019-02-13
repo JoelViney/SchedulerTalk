@@ -86,14 +86,15 @@ namespace SchedulerTalk
             // "I allow cross domain calls from the domains I specify"
             // https://weblog.west-wind.com/posts/2016/Sep/26/ASPNET-Core-and-CORS-Gotchas
             //
+            // .AllowAnyOrigin()
+            //
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
                     builder => builder
-                    .AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .WithOrigins("http://localhost:8080", "http://localhost:49699")
+                    .WithOrigins("http://localhost:8080", "http://localhost:49699", "https://schedulertalk.azurewebsites.net/")
                     .AllowCredentials());
             });
 
@@ -160,8 +161,11 @@ namespace SchedulerTalk
                 c.RoutePrefix = string.Empty;
             });
 
-            app.UseHangfireDashboard();
-            app.UseHangfireServer();
+            // This needs to be after API's Authentication (needed to get it to work in prod)
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions()
+            {
+                Authorization = new[] { new HangfireDashboardAuthorizeFilter() }
+            });
 
 
             app.UseSignalR(routes =>
