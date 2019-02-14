@@ -32,8 +32,12 @@ namespace SchedulerTalk.Jobs
 
             var widget = await _service.GetAsync(id);
 
-            context.WriteLine("Processing widget {0}...", widget.Name);
-            _logger.LogDebug("Processing widget {0}...", widget.Name);
+            for (int i = 0; i < 10; i++)
+            {
+                context.WriteLine("Processing widget {0}...", widget.Name);
+                _logger.LogDebug("Processing widget {0}...", widget.Name);
+                Thread.Sleep(1000);
+            }
 
             widget.Processing = false;
 
