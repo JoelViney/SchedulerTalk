@@ -29,9 +29,23 @@ namespace SchedulerTalk.Services
 
         public async Task<ActionResult<List<Widget>>> GetListAsync()
         {
-            var list = await _context.Widgets.Take(5).OrderByDescending(o => o.DateCreated).ToListAsync();
+            var list = await _context.Widgets.Take(5).OrderBy(o => o.DateCreated).ToListAsync();
             return list;
 
+        }
+
+        public async Task<bool> ProcessOneAsync()
+        {
+            var widget = await _context.Widgets.Where(x => x.Processing).OrderBy(o => o.DateCreated).FirstOrDefaultAsync();
+
+            if (widget == null)
+            {
+                return false;
+            }
+
+            var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(null, widget.Id), TimeSpan.FromSeconds(30));
+
+            return true;
         }
 
         public async Task<Widget> GetAsync(int id)
@@ -54,7 +68,7 @@ namespace SchedulerTalk.Services
 
             await _hubContext.Clients.All.SendAsync("Create", item);
 
-            var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(null, item.Id), TimeSpan.FromSeconds(30));
+            //var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(null, item.Id), TimeSpan.FromSeconds(30));
 
             return item;
         }
@@ -73,7 +87,7 @@ namespace SchedulerTalk.Services
 
             if (item.Processing)
             {
-                var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(null, item.Id), TimeSpan.FromSeconds(10));
+                //var jobId = BackgroundJob.Schedule<ProcessWidgetJob>(x => x.Execute(null, item.Id), TimeSpan.FromSeconds(10));
             }
 
             return widget;

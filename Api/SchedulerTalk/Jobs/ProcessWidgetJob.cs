@@ -49,5 +49,22 @@ namespace SchedulerTalk.Jobs
             _logger.LogDebug("Job done.");
             Thread.Sleep(1000);
         }
+
+        public async Task Execute(int id)
+        {
+            _logger.LogDebug("Starting job.");
+
+            var widget = await _service.GetAsync(id);
+
+            for (int i = 0; i < 10; i++)
+            {
+                _logger.LogDebug("Processing widget {0}...", widget.Name);
+                Thread.Sleep(1000);
+            }
+
+            widget.Processing = false;
+
+            await _service.UpdateAsync(widget);
+        }
     }
 }
