@@ -16,26 +16,26 @@ namespace SchedulerTalk.Jobs
 {
     public class ProcessWidgetJob
     {
-        private readonly ILogger<ProcessWidgetJob> _logger;
+        private readonly JobLogger _logger;
         private readonly WidgetService _service;
 
         public ProcessWidgetJob(ILogger<ProcessWidgetJob> logger, WidgetService service)
         {
-            _logger = logger;
+            _logger = new JobLogger(logger);
             _service = service;
         }
 
         public async Task Execute(PerformContext context, int id)
         {
-            context.WriteLine("Starting job.");
             _logger.LogDebug("Starting job.");
 
             var widget = await _service.GetAsync(id);
 
+            _logger.LogDebug("Processing Widget #{0} {1}...", widget.Id, widget.Name);
+
             for (int i = 0; i < 10; i++)
             {
-                context.WriteLine("Processing widget {0}...", widget.Name);
-                _logger.LogDebug("Processing widget {0}...", widget.Name);
+                _logger.LogDebug("Doing Stuff...");
                 Thread.Sleep(1000);
             }
 
@@ -43,11 +43,9 @@ namespace SchedulerTalk.Jobs
 
             await _service.UpdateAsync(widget);
 
-            context.WriteLine("Job done.");
-            context.WriteLine("Job done.");
-            context.WriteLine("Job done.");
-            _logger.LogDebug("Job done.");
-            Thread.Sleep(1000);
+            _logger.LogDebug("Processed Widget #{0} {1}.", widget.Id, widget.Name);
+
+            context.WriteLine("");
         }
 
         public async Task Execute(int id)
@@ -56,15 +54,19 @@ namespace SchedulerTalk.Jobs
 
             var widget = await _service.GetAsync(id);
 
+            _logger.LogDebug("Processing Widget #{0} {1}...", widget.Id, widget.Name);
+
             for (int i = 0; i < 10; i++)
             {
-                _logger.LogDebug("Processing widget {0}...", widget.Name);
+                _logger.LogDebug("Doing Stuff...");
                 Thread.Sleep(1000);
             }
 
             widget.Processing = false;
 
             await _service.UpdateAsync(widget);
+
+            _logger.LogDebug("Processed Widget #{0} {1}.", widget.Id, widget.Name);
         }
     }
 }

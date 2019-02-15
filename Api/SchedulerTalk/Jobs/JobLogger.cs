@@ -23,8 +23,11 @@ namespace SchedulerTalk.Jobs
         {
             _logger.LogDebug(message, args);
 
-            string output = String.Format(message, args);
-            HangfireContext.WriteLine(output);
+            if (this.HangfireContext != null)
+            { 
+                string output = String.Format(message, args);
+                this.HangfireContext.WriteLine(output);
+            }
         }
     }
 }

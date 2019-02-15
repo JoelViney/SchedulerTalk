@@ -35,10 +35,9 @@ namespace SchedulerTalk.Jobs
             _logger.LogDebug("Starting job...");
 
             var prefixes = new string[] { "Fugg", "Dog", "Cheek", "Moo", "Bob", "Choo", "Zee", "Wagh", "Chomp" };
-            var suffixes = new string[] { "ed", "er", "ington", "ssssss", "oes", "choo", "lah", "gh", "-alot" };
+            var suffixes = new string[] { "ed", "er", "ington", "ssssss", "oes", "choo", "lah", "gh", "alot" };
 
             var name = $"{prefixes[_random.Next(prefixes.Length)]}{suffixes[_random.Next(suffixes.Length)]}";
-
 
             var item = new Widget()
             {
@@ -47,17 +46,18 @@ namespace SchedulerTalk.Jobs
                 DateCreated = DateTime.Now
             };
 
+            _logger.LogDebug("Creating Widget #{0} {1}...", item.Id, item.Name);
+
             for (int i = 0; i < 10; i++)
             {
-                _logger.LogDebug("Creating widget {0}...", item.Name);
+                _logger.LogDebug("Thinking...");
                 Thread.Sleep(1000);
             }
 
             var widget = await _service.CreateAsync(item);
 
-            context.WriteLine("Job done 3");
-            context.WriteLine("Job done 2");
-            _logger.LogDebug("Job done 1");
+            _logger.LogDebug("Created Widget #{0} {1}", widget.Id, widget.Name);
+
             context.WriteLine("");
         }
     }
