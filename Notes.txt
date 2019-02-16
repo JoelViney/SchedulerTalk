@@ -1,0 +1,112 @@
+
+
+============================================================
+
+HANGFIRE V AZURE WOZZIT STUFF APP SERVICE LOGIC TEER
+
+**** Image ***
+
+============================================================
+
+http://www.faciletechnolab.com/Blog/2018/8/30/5-helpful-tips-to-use-hangfire-for-background-scheduling-in-better-way
+
+Scheduling background jobs is something that every developer will come across at some stage. In the past I've used or worked on:
+
+* Manually triggering a batch job at the start of the day.
+	Easish, you still need progress bars
+	Annoying for the end user
+	Session timeout issues for web based applications
+
+* Windows Scheduler (to trigger an exe)
+	Double the Installation - Issues keeping your production / job code synchronized.
+	I just felt dirty
+
+* Windows Service
+	Installation is a pain in the ass
+	Issues keeping your production / job code synchronized.
+
+* Azure Scheduler -> Azure Jobs
+	The same, it was a pain in the arse although easier to report on
+	Installation issues
+
+* Azure Scheduler -> Triggering an http endpoint
+	Session timeout issues? Security issues
+	Uses websites resources
+
+* Hangfire
+	Easy to install
+	Uses websites resources
+
+============================================================
+
+* Hangfire
+	History
+	Installation
+	InMemory / Database
+	How it works
+	reentrant
+	Works on scaled out websites (by using database storage)
+
+============================================================
+Hangfire Job Types
+
+============================================================
+Hangfire Job Arguments
+> Pass in objects
+> PAss in parameters
+
+============================================================
+Dashboard
+
+> Cool add-on
+
+============================================================
+
+Azure
+	Easy to install if your already running Azure
+	Otherwise? HTTP End points?
+	Easy to add other steps? But really whats to gain? Send an email? Tell you ok Slack... Could be good.
+
+============================================================
+ Azure WebJobs / Functions
+	Reporting for those
+
+In 2016, we launched Azure Logic Apps, which includes the ability to configure and run scheduled jobs as well as advanced workflow features.
+
+============================================================
+
+
+
+
+<span class="badge badge-pill badge-primary">Primary</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
