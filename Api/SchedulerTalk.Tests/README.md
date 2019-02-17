@@ -10,3 +10,7 @@ Install-Package Microsoft.Extensions.Logging
 
 Install-Package NLog
 Install-Package NLog.Web.AspNetCore
+
+Install-Package Hangfire
+Install-Package Hangfire.MemoryStorage.Core
+Install-Package Hangfire.Console

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulerTalkPrac", "SchedulerTalkPrac\SchedulerTalkPrac.csproj", "{BD8B93B0-6900-41C7-8E13-E89A3A7BC77A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD8B93B0-6900-41C7-8E13-E89A3A7BC77A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD8B93B0-6900-41C7-8E13-E89A3A7BC77A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD8B93B0-6900-41C7-8E13-E89A3A7BC77A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD8B93B0-6900-41C7-8E13-E89A3A7BC77A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {456937E3-E585-42AE-AA5E-4F43F484AF3A}
+	EndGlobalSection
+EndGlobal
